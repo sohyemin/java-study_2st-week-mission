@@ -3,13 +3,29 @@ package com.study.week2.mission0;
 import java.time.LocalDateTime;
 
 public class Request {
-    long requestId;
-    String userId;
-    String prompt;
+    private long requestId;
+    private String userId;
+    private String prompt;
 
-    int priority; // 우선도
+    private int priority; // 우선도
 
-    int retryCount; // 재요청 횟수
+    private int retryCount; // 재요청 횟수
 
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void addRetryCount() {
+        this.retryCount++;
+    }
 }
