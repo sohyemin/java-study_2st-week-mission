@@ -13,7 +13,9 @@ public class Scheduler {
     }
 
     public Request take() throws InterruptedException {
-        return queue.take();
+        Request request = queue.take();
+        System.out.println("작업 시작 : " + request.getRequestId());
+        return request;
     }
 
     public void retry(Request request){

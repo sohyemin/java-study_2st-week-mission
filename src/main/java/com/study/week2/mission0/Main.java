@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         ExecutorService service = Executors.newFixedThreadPool(5);
         Scheduler scheduler = new Scheduler();
@@ -20,7 +20,6 @@ public class Main {
         scheduler.submit(request3);
         scheduler.submit(request4);
 
-        service.submit(new Worker(scheduler));
         service.submit(new Worker(scheduler));
         service.submit(new Worker(scheduler));
         service.submit(new Worker(scheduler));
