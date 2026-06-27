@@ -1,53 +1,31 @@
 package com.study.week2.mission1.server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
-public class SocketClient {
+public class SocketClient implements Runnable{
 
-    public void connect() throws IOException {
+    private final int clientId;
 
-        Socket socket = new Socket("localhost", 8080);
-        System.out.println("서버 연결 성공!");
+    public SocketClient(int clientId) {
+        this.clientId = clientId;
+    }
 
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(socket.getInputStream())
-        );
+    @Override
+    public void run() {
+        try {
+            Socket socket = new Socket("localhost",8080);
 
-        PrintWriter writer = new PrintWriter(
-                socket.getOutputStream(),
-                true
-        );
+            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+            writer.println("hello from client = "+clientId);
 
-        Scanner scanner = new Scanner(System.in);
+            // 연결을 바로 끊지 않고 유지
+            Thread.sleep(60_000);
 
-        while (true){
-            System.out.println("메시지 입력 : ");
-            String message = scanner.nextLine();
-
-            writer.println(message);
-
-            System.out.println("서버 응답 : ");
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                if (line.equals("[END]")) {
-                    break;
-                }
-
-                System.out.println(line);
-            }
-
-            if (message.equals("exit")) {
-                break;
-            }
-
+            socket.close();
+        } catch (IOException | InterruptedException e) {
+            System.out.println("[Client-" + clientId + "] 종료: " + e.getMessage());
         }
-        socket.close();
     }
 }

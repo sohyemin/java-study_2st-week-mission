@@ -3,47 +3,32 @@ package com.study.week2.mission1.server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
-public class SocketServer {
+public class SocketServer implements Runnable{
 
-    private static final String END_SIGNAL = "[END]";
+    @Override
+    public void run() {
+        try {
+            ServerSocket serverSocket = new ServerSocket(8080);
+            System.out.println("서버 시작!");
 
-    public void start() throws IOException {
+            while (true){
+                Socket socket = serverSocket.accept();
+                System.out.println("클라이언트 연결!");
 
-        ServerSocket serverSocket = new ServerSocket(8080);
-        System.out.println("서버 시작!");
-
-        Socket socket = serverSocket.accept();
-        System.out.println("클라이언트 연결!");
-
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(
-                        socket.getInputStream(),
-                        StandardCharsets.UTF_8
-                )
-        );
-
-        PrintWriter writer = new PrintWriter(
-                new OutputStreamWriter(
-                        socket.getOutputStream(),
-                        StandardCharsets.UTF_8
-                ),
-                true
-        );
-
-        String message;
-
-        while ((message = reader.readLine()) !=null){
-            if(message.equals("exit")){
-                writer.println("채팅을 종료합니다.");
-                writer.println(END_SIGNAL);
-                break;
+                new Thread(()-> {
+                    try {
+                        Thread.sleep(60_000);
+                        socket.close();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }).start();
             }
+
+        } catch (IOException e){
+            System.out.println("서버 종료 : " + e);
         }
 
-        socket.close();
-        serverSocket.close();
     }
-
 }
