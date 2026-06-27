@@ -16,14 +16,7 @@ public class SocketServer implements Runnable{
                 Socket socket = serverSocket.accept();
                 System.out.println("클라이언트 연결!");
 
-                new Thread(()-> {
-                    try {
-                        Thread.sleep(60_000);
-                        socket.close();
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }).start();
+                new Thread(new ClientHandler(serverSocket)).start();
             }
 
         } catch (IOException e){
