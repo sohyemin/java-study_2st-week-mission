@@ -23,6 +23,9 @@ public class ChatMessage {
         createdAt = LocalDateTime.now();
     }
 
+    public ChatMessage(String userId, String message) {
+    }
+
     public long getRequestId() {
         return requestId;
     }

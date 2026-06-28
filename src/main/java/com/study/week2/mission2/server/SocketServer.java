@@ -1,8 +1,8 @@
 package com.study.week2.mission2.server;
 
-
-import com.study.week2.mission2.engine.AIEngine;
 import com.study.week2.mission2.factory.AIEngineFactory;
+import com.study.week2.mission2.scheduler.MessageQueue;
+import com.study.week2.mission2.session.SessionManager;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -11,59 +11,31 @@ import java.nio.charset.StandardCharsets;
 
 public class SocketServer {
 
+
+    private final SessionManager sessionManager;
+    private final MessageQueue messageQueue;
+
     private static final String END_SIGNAL = "[END]";
 
-    public void start() throws IOException {
+    public SocketServer(SessionManager sessionManager, MessageQueue messageQueue) {
+        this.sessionManager = sessionManager;
+        this.messageQueue = messageQueue;
+    }
 
-//        AIEngine engine = AIEngineFactory.create("openai");
-        AIEngine engine = AIEngineFactory.create("ollama");
+    public void start() throws IOException {
 
         ServerSocket serverSocket = new ServerSocket(8080);
         System.out.println("서버 시작!");
 
-        Socket socket = serverSocket.accept();
-        System.out.println("클라이언트 연결!");
 
-        BufferedReader reader = new BufferedReader(
-          new InputStreamReader(
-                  socket.getInputStream(),
-                  StandardCharsets.UTF_8
-          )
-        );
+        while (true) {
+            Socket socket = serverSocket.accept();
+            System.out.println("클라이언트 연결!");
 
-        PrintWriter writer = new PrintWriter(
-                new OutputStreamWriter(
-                        socket.getOutputStream(),
-                        StandardCharsets.UTF_8
-                ),
-                true
-        );
-
-        String message;
-
-        while ((message = reader.readLine()) !=null){
-            if(message.equals("exit")){
-                writer.println("채팅을 종료합니다.");
-                writer.println(END_SIGNAL);
-                break;
-            }
-
-            if(message.equals("/ollama")){
-                engine =
-                        AIEngineFactory.create("ollama");
-                writer.println("Ollama로 변경되었습니다.");
-                writer.println(END_SIGNAL);
-                continue;
-            }
-
-            String response = engine.chat(message);
-
-            writer.println(response);
-            writer.println(END_SIGNAL);
+            new Thread(
+                    new ClientHandler(socket, sessionManager, messageQueue)
+            ).start();
         }
-
-        socket.close();
-        serverSocket.close();
     }
 
 }

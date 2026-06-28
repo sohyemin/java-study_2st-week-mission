@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class BroadCastManager {
+public class BroadcastManager {
     private final SessionManager manager;
 
-    public BroadCastManager(SessionManager manager) {
+    public BroadcastManager(SessionManager manager) {
         this.manager = manager;
     }
 
