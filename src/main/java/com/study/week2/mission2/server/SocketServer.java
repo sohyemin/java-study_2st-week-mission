@@ -27,7 +27,6 @@ public class SocketServer {
         ServerSocket serverSocket = new ServerSocket(8080);
         System.out.println("서버 시작!");
 
-
         while (true) {
             Socket socket = serverSocket.accept();
             System.out.println("클라이언트 연결!");
