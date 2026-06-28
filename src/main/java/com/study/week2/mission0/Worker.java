@@ -32,7 +32,6 @@ public class Worker implements Runnable {
         }
     }
 
-
     private boolean callFakeAiApi(Request request) {
         // 외부 AI API 호출 시간을 흉내냄
         try {
